@@ -208,20 +208,6 @@
       </tbody>
     </table>
     <div class="zones-note">Zones anchored to physiological thresholds. Max HR ≈ 198. AeT ≈ 148. LT ≈ 175.</div>
-    <div style="margin-top:22px;padding-top:16px;border-top:2px solid var(--ink);">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink);font-weight:500;margin-bottom:8px;">Pace Reference — Current Race Fitness</div>
-      <table class="zones-table">
-        <thead><tr><th>Distance / Effort</th><th>Target Pace</th><th>Use in Intervals</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Mile</strong></td><td>6:00–6:20/mi</td><td>400m reps</td></tr>
-          <tr><td><strong>5K</strong></td><td>6:30–6:45/mi</td><td>400m, 600m reps</td></tr>
-          <tr><td><strong>10K</strong></td><td>6:50–7:05/mi</td><td>800m, mile reps</td></tr>
-          <tr><td><strong>Threshold</strong></td><td>7:00–7:15/mi</td><td>1km reps, short recovery</td></tr>
-          <tr><td><strong>Marathon</strong></td><td>7:40–7:55/mi</td><td>Flat long-run body</td></tr>
-        </tbody>
-      </table>
-      <div class="zones-note">Derived from recent tempo efforts (Jan 2026: 6.3mi @ 7:08/mi, HR 167).</div>
-    </div>
   </div>
 </details>
 
@@ -461,7 +447,7 @@ function renderTrends(){
   var decR=ar.filter(function(r){return r.decoupling!=null&&r.distance_mi>=3&&r.type!=="quality"&&r.aerobic_pct>=50;});
   var avgD=decR.length?decR.reduce(function(s,r){return s+r.decoupling;},0)/decR.length:null;
   var decNote=avgD==null?"Need more runs ≥3mi to establish baseline.":Math.abs(avgD)<5?"Aerobic engine is holding pace under fatigue — base is building.":Math.abs(avgD)<10?"Some drift. Normal early in a build, watch it on long efforts.":"High drift. Suggests aerobic system is under-built for the paces you're running.";
-  var totMin=ar.reduce(function(s,r){return s+(r.duration_min||0);},0),aerMin=ar.reduce(function(s,r){return s+(r.aerobic_min||0);},0),oa=totMin>0?aerMin/totMin*100:null;
+  var aerMin=ar.reduce(function(s,r){return s+(r.aerobic_min||0);},0),zTotMin=ar.reduce(function(s,r){return s+(r.z1_min||0)+(r.z2_min||0)+((r.duration_min||0)*(r.z3plus_pct||0)/100);},0),totMin=ar.reduce(function(s,r){return s+(r.duration_min||0);},0),oa=zTotMin>0?aerMin/zTotMin*100:null;
   var aerNote=oa==null?"No data yet.":oa>=80?"Strong discipline — most time is below AeT, which is where the aerobic engine gets built.":oa>=65?"Decent, but easy days are drifting above Z2. The Z2 cap exists for a reason.":"Below target. Too much time above AeT on easy days is burning matches you need for race day.";
   var epm=tm2>0?te2/tm2:0,vertNote="Race averages ~268 ft/mi. "+(epm>=200?"Good — your training terrain is matching race demand.":epm>=100?"Building. Push vert density above 150 ft/mi by peak weeks.":"Low — prioritize hilly routes to match race terrain demands.");
   document.getElementById("insights").innerHTML='<div class="insight"><div class="insight-label">Avg Decoupling (runs ≥3mi)</div><div class="insight-value" style="color:'+(avgD==null?"var(--ink)":Math.abs(avgD)<5?"var(--good)":Math.abs(avgD)<10?"var(--warn)":"var(--bad)")+'">'+(avgD!=null?(avgD>0?"+":"")+fmtNum(avgD,1)+"%":"–")+'</div><div class="insight-note">'+decNote+'</div></div><div class="insight"><div class="insight-label">Overall Z2 Discipline</div><div class="insight-value" style="color:'+(oa==null?"var(--ink)":oa>=80?"var(--good)":oa>=65?"var(--warn)":"var(--bad)")+'">'+(oa!=null?fmtNum(oa,0)+"%":"–")+'</div><div class="insight-note">'+aerNote+'</div></div><div class="insight"><div class="insight-label">Vert Density</div><div class="insight-value" style="color:'+(epm>=200?"var(--good)":epm>=100?"var(--warn)":"var(--bad)")+'">'+(tm2>0?fmtNum(epm,0)+' ft/mi':"–")+'</div><div class="insight-note">'+vertNote+'</div></div>';
