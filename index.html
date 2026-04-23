@@ -262,9 +262,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // CONFIG — only thing you need to change if the Sheet URL ever changes
 // ─────────────────────────────────────────────────────────────────────────────
-var SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCCeHS1e_RWRudnY6q0qdzQILQamWvTgexggm71oBiHpZPXsknGDK2W0L4gburXCMbT2K7LL1N7HWa/pub?gid=177559057&single=true&output=csv";
+var SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCCeHS1e_RWRudnY6q0qdzQILQamWvTgexggm71oBiHpZPXsknGDK2W0L4gburXCMbT2K7LL1N7HWa/pub?gid=1726929320&single=true&output=csv";
 var REFRESH_MS = 5 * 60 * 1000; // re-fetch every 5 min
-var CORS_PROXY = "https://api.allorigins.win/raw?url=";
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TRAINING PLAN (static — weeks/daily prescriptions never change)
@@ -306,7 +306,7 @@ var chartInstances={};
 // ─────────────────────────────────────────────────────────────────────────────
 function fetchSheet() {
   setBadge("syncing");
-  fetch(CORS_PROXY + encodeURIComponent(SHEET_CSV_URL))
+  fetch(SHEET_CSV_URL)
     .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); })
     .then(function(txt){ ingestCsv(txt); setBadge("live"); })
     .catch(function(e){ console.warn("Sheet fetch failed:",e); setBadge("error"); initRender(); });
